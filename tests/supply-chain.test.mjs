@@ -28,3 +28,16 @@ test('Supabase: الإصدار مثبَّت وبصمة SRI تطابق الحزم
   w.eval(bundle.toString('utf8'));
   assert.equal(typeof w.supabase.createClient, 'function');
 });
+
+test('سكربت التطبيق يصل المتصفح كاملاً: لا </script> داخل الكود (كان سيُبقي الصفحة على شاشة التحميل)', async () => {
+  const { readAppSource, compileApp } = await import('./extract.mjs');
+  const src = readAppSource();
+  assert.ok(src.length > 250000, 'طول الكود بعد محلّل HTML: ' + src.length);
+  assert.ok(src.includes('function generatePDF') && src.includes('class ErrorBoundary') && /ReactDOM\.createRoot|ReactDOM\.render/.test(src), 'الكود كامل حتى نهايته');
+  assert.ok(!/<\/script/i.test(src), 'يوجد </script> داخل نص السكربت');
+  // ما يقرؤه محلّل HTML = كل ما بين وسم السكربت وآخر </script> قبل <noscript> (أي لم يُقتطع مبكراً)
+  const m = html.match(/<script type="text\/babel"[^>]*>([\s\S]*)<\/script>\s*<noscript>/);
+  assert.ok(m, 'بنية الصفحة');
+  assert.equal(src, m[1], 'السكربت كما قرأه المتصفح مطابق للمكتوب (لم ينتهِ مبكراً)');
+  assert.doesNotThrow(() => compileApp());
+});

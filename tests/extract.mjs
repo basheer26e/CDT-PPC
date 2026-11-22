@@ -3,21 +3,25 @@ import fs from 'node:fs';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { parse } from '@babel/parser';
-import babel from '@babel/core';
+import * as standalone from '@babel/standalone';
+import { JSDOM } from 'jsdom';
 
 const ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
 export const htmlPath = path.join(ROOT, 'index.html');
 
 export function readAppSource() {
+  // نقرأ السكربت بمحلّل HTML نفسه الذي تستخدمه المتصفحات (وليس بتعبير نمطي): لو ظهر </script> داخل الكود
+  // ينتهي السكربت هناك فيُقتطع الكود هنا أيضاً ويفشل الاختبار — كما كان سيحدث للمستخدم تماماً
   const html = fs.readFileSync(htmlPath, 'utf8');
-  const m = html.match(/<script type="text\/babel"[^>]*>([\s\S]*?)<\/script>\s*\n\s*<noscript>/);
-  if (!m) throw new Error('لم أجد <script type="text/babel"> في index.html');
-  return m[1];
+  const el = new JSDOM(html).window.document.querySelector('script[type="text/babel"]');
+  if (!el) throw new Error('لم أجد <script type="text/babel"> في index.html');
+  return el.textContent;
 }
 
 export function compileApp() {
+  // نفس مكتبة Babel وإصدارها وإعدادها (data-presets="react") التي تحمّلها الصفحة في المتصفح
   const src = readAppSource();
-  return babel.transformSync(src, { presets: [['@babel/preset-react', { runtime: 'classic' }]], filename: 'app.jsx' }).code;
+  return standalone.transform(src, { presets: ['react'], filename: 'app.jsx' }).code;
 }
 
 const LOGIC = new Set(`DEFAULT_WEEKS DEMAND_HIGH_UTIL mkDemand mkBOM mkInventory mkCapacity mkFGIConfig mkEngineMaint seededRandom
