@@ -81,7 +81,7 @@ test('توليد الخطة ثم فتح كل التبويبات وأزرار م�
 function cloudClient() {
   const tables = {
     profiles: [{ id: 'u1', organization_id: 'o1', role: 'admin', full_name: 'N' }],
-    organizations: [{ id: 'o1', name: 'Qamariya' }],
+    organizations: [{ id: 'o1', name: 'Demo Factory' }],
     products: [{ id: 'p1', organization_id: 'o1', name: 'Ghee' }],
     bom_components: [{ id: 'b1', organization_id: 'o1', product_id: 'p1', material_key: 'm1', material_name: 'Milk', qty_per_unit: '2', unit: 'kg', available: '9000', safety_stock: '100', lead_time_weeks: '2', max_capacity: null },
                      { id: 'b2', organization_id: 'o1', product_id: 'p1', material_key: 'm2', material_name: 'Pack', qty_per_unit: '1', unit: 'pc', available: '7000', safety_stock: '50', lead_time_weeks: '4', max_capacity: null }],
@@ -95,8 +95,8 @@ function cloudClient() {
 
 test('الدخول السحابي يدمج بيانات السحابة ولا يمسح تكلفة الوحدة ولا إعدادات الطاقة المحلية', async () => {
   const code = compileApp()
-    .replace('const SUPABASE_URL = "ضعي-رابط-مشروعك-هنا";', 'const SUPABASE_URL = "https://test.supabase.co";')
-    .replace('const SUPABASE_ANON_KEY = "ضعي-anon-public-key-هنا";', 'const SUPABASE_ANON_KEY = "' + 'k'.repeat(40) + '";');
+    .replace('const SUPABASE_URL = "ضع-رابط-مشروعك-هنا";', 'const SUPABASE_URL = "https://test.supabase.co";')
+    .replace('const SUPABASE_ANON_KEY = "ضع-anon-public-key-هنا";', 'const SUPABASE_ANON_KEY = "' + 'k'.repeat(40) + '";');
   assert.ok(code.includes('https://test.supabase.co'), 'تم ضبط عنوان Supabase للاختبار');
   const ui = boot({ code, seed: {}, beforeEval: (w) => { w.supabase = { createClient: () => cloudClient() }; } });
   await sleep(1500);
@@ -111,14 +111,14 @@ test('الدخول السحابي يدمج بيانات السحابة ولا ي
 
 test('إعادة الدخول السحابي: unitCost وإعدادات الطاقة المحلية تبقى (لا تُستبدل)', async () => {
   const code = compileApp()
-    .replace('const SUPABASE_URL = "ضعي-رابط-مشروعك-هنا";', 'const SUPABASE_URL = "https://test.supabase.co";')
-    .replace('const SUPABASE_ANON_KEY = "ضعي-anon-public-key-هنا";', 'const SUPABASE_ANON_KEY = "' + 'k'.repeat(40) + '";');
+    .replace('const SUPABASE_URL = "ضع-رابط-مشروعك-هنا";', 'const SUPABASE_URL = "https://test.supabase.co";')
+    .replace('const SUPABASE_ANON_KEY = "ضع-anon-public-key-هنا";', 'const SUPABASE_ANON_KEY = "' + 'k'.repeat(40) + '";');
   // الجولة الأولى: ينشئ التطبيق الخطة المحلية للمنتج السحابي
   const first = boot({ code, seed: {}, beforeEval: (w) => { w.supabase = { createClient: () => cloudClient() }; } });
   await sleep(1500);
   const invKey = Object.keys(first.w.localStorage).find((k) => /^cdt:plan:.*:inventory$/.test(k));
   const capKey = invKey.replace(':inventory', ':capacity');
-  // المستخدمة تضيف محلياً: تكلفة وحدة + نسب عيوب/أيام عمل مخصّصة
+  // المستخدم يضيف محلياً: تكلفة وحدة + نسب عيوب/أيام عمل مخصّصة
   const inv = first.ls(invKey).map((i) => ({ ...i, unitCost: i.id === 'm1' ? 7.5 : 1.25 }));
   const cap = { ...first.ls(capKey), normalDays: 5, defectRateMin: 4.4, defectRateMax: 6.6, maxShifts: 2 };
   const stored = Object.fromEntries(Object.keys(first.w.localStorage).map((k) => [k, JSON.parse(first.w.localStorage.getItem(k))]));

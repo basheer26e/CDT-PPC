@@ -16,7 +16,7 @@
 --  طريقة التشغيل: Supabase Dashboard → SQL Editor → الصقي المحتوى كاملاً → Run
 -- ═══════════════════════════════════════════════════════════════════
 
--- 1) أضيفي عمود product_id لكل جدول كان "مشتركاً على مستوى المنظمة" فقط
+-- 1) أضف عمود product_id لكل جدول كان "مشتركاً على مستوى المنظمة" فقط
 --    (NULL مسموح مبدئياً حتى بعد خطوة الترحيل بالأسفل، ليست القيد صارماً بعد
 --    لتفادي كسر أي كتابة قديمة لم تُحدَّث بعد لإرسال product_id)
 ALTER TABLE bom_components      ADD COLUMN IF NOT EXISTS product_id uuid REFERENCES products(id) ON DELETE CASCADE;
@@ -50,20 +50,20 @@ BEGIN
       UPDATE scheduled_receipts SET product_id = single_product_id WHERE organization_id = org.organization_id AND product_id IS NULL;
       RAISE NOTICE 'رُحِّلت بيانات المنظمة % تلقائياً (منتج واحد فقط: %)', org.organization_id, single_product_id;
     ELSE
-      RAISE NOTICE '⚠️ المنظمة % عندها % منتج/منتجات — لم تُرحَّل تلقائياً، تحتاج تحديد يدوي (شوفي الاستعلام بالأسفل)', org.organization_id, product_count;
+      RAISE NOTICE '⚠️ المنظمة % عندها % منتج/منتجات — لم تُرحَّل تلقائياً، تحتاج تحديد يدوي (شوف الاستعلام بالأسفل)', org.organization_id, product_count;
     END IF;
   END LOOP;
 END $$;
 
 -- ═══════════════════════════════════════════════════════════════════
---  4) استعلام تحقّق: شغّليه بعد الترحيل — يوريكِ أي صفوف بقيت بلا product_id
+--  4) استعلام تحقّق: شغّله بعد الترحيل — يوريك أي صفوف بقيت بلا product_id
 --  (يعني منظمات عندها أكثر من منتج ولازم تحديد يدوي أي صف يخص أي منتج)
 -- ═══════════════════════════════════════════════════════════════════
 -- SELECT organization_id, count(*) AS unmigrated_rows
 -- FROM bom_components WHERE product_id IS NULL GROUP BY organization_id;
 
 -- ═══════════════════════════════════════════════════════════════════
---  5) (اختياري — نفّذيه لاحقاً بعد التأكد أن كل الصفوف رُحِّلت بنجاح)
+--  5) (اختياري — نفّذه لاحقاً بعد التأكد أن كل الصفوف رُحِّلت بنجاح)
 --  فرض القيد NOT NULL نهائياً، لمنع أي كتابة مستقبلية بلا product_id
 -- ═══════════════════════════════════════════════════════════════════
 -- ALTER TABLE bom_components      ALTER COLUMN product_id SET NOT NULL;

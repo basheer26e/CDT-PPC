@@ -1,5 +1,5 @@
 -- ═══════════════════════════════════════════════════════════════════
---  ترقية صلاحيات قاعدة موجودة أصلاً إلى النسخة المحصَّنة (شغّليه مرة واحدة من SQL Editor)
+--  ترقية صلاحيات قاعدة موجودة أصلاً إلى النسخة المحصَّنة (شغّله مرة واحدة من SQL Editor)
 --  قاعدة جديدة من 01_schema.sql لا تحتاجه — مُطبَّق فيها أصلاً. آمن لإعادة التشغيل (idempotent).
 -- ═══════════════════════════════════════════════════════════════════
 --  ما يغلقه (أُثبتت الثغرات الأولى باختبار فعلي على Postgres قبل الإغلاق):
@@ -87,7 +87,7 @@ create policy "receipts_update" on scheduled_receipts for update using (organiza
 create policy "receipts_delete" on scheduled_receipts for delete using (organization_id = get_my_organization_id() and is_org_admin());
 
 -- (اختياري) منع تكرار صفوف product_id = NULL بقاعدة قديمة: يتطلب PostgreSQL 15+ وخلوّ البيانات من تكرارات.
--- راجعي أسماء القيود الحالية أولاً:  select conname from pg_constraint where conrelid = 'bom_components'::regclass and contype = 'u';
+-- راجع أسماء القيود الحالية أولاً:  select conname from pg_constraint where conrelid = 'bom_components'::regclass and contype = 'u';
 --   alter table bom_components drop constraint <اسم_القيد_القديم>;
 --   alter table bom_components add constraint bom_components_org_product_material_key unique nulls not distinct (organization_id, product_id, material_key);
 --   (وبالمثل production_lines على (organization_id, product_id))

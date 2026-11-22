@@ -82,7 +82,7 @@ test('قالب «إضافة مصنع جديد» يعمل ويُنشئ admin', as
   const C = '33333333-3333-3333-3333-333333333333';
   await db.exec(`insert into auth.users(id,email) values ('${C}','c@c')`);
   await db.exec(lines.slice(a, b + 1).map(l => l.replace(/^-- ?/, '')).join('\n')
-    .replace("'ألصقي-User-UID-من-خطوة-أ-هنا'", `'${C}'`).replace("'اسم المصنع هنا'", "'Factory C'").replace("'الاسم الكامل للمسؤول'", "'C Admin'"));
+    .replace("'ألصق-User-UID-من-خطوة-أ-هنا'", `'${C}'`).replace("'اسم المصنع هنا'", "'Factory C'").replace("'الاسم الكامل للمسؤول'", "'C Admin'"));
   const r = (await db.query(`select p.role, o.name from profiles p join organizations o on o.id=p.organization_id where p.id='${C}'`)).rows[0];
   assert.deepEqual({ ...r }, { role: 'admin', name: 'Factory C' });
 });

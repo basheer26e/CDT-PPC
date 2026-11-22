@@ -5,7 +5,7 @@
 //  ويتوقع الرد:  { text: "..." }  أو  { error: "..." }
 //
 //  ⚠️ لم يُختبر على مشروع Supabase حقيقي (لا يوجد وصول لمشروعك من بيئة الاختبار).
-//     اختبريه بعد النشر بالخطوات في README (قسم «الوضع السحابي»).
+//     اختبره بعد النشر بالخطوات في README (قسم «الوضع السحابي»).
 //
 //  الفائدة: مفتاح Gemini يبقى سرّاً على الخادم، والمستخدم لا يدخل أي مفتاح.
 //  الحماية: verify_jwt مُفعَّل افتراضياً — لا يصل للدالة إلا مستخدم مسجّل دخوله بمشروعك.
@@ -46,7 +46,7 @@ Deno.serve(async (req: Request) => {
       headers: { "Content-Type": "application/json", "x-goog-api-key": apiKey },
       body: JSON.stringify({ contents: [{ parts: [{ text: prompt }] }] }),
     });
-    if (!r.ok) return json({ error: `خطأ من Gemini (${r.status}) — تأكدي من GEMINI_MODEL والمفتاح` });
+    if (!r.ok) return json({ error: `خطأ من Gemini (${r.status}) — تأكد من GEMINI_MODEL والمفتاح` });
     const data = await r.json();
     const text = data?.candidates?.[0]?.content?.parts?.[0]?.text;
     return text ? json({ text }) : json({ error: "Gemini لم يُرجع نصاً" });

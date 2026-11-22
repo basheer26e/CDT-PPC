@@ -24,7 +24,7 @@ const LOGIC = new Set(`DEFAULT_WEEKS DEMAND_HIGH_UTIL mkDemand mkBOM mkInventory
 calcMPS addDays weekRange srForWeek calcEOQ calcMRP computeMaterialCaps levelProduction runFullSimulation calcEngineMaintenance
 calcPostPlan calcNextMonthRec calcRunToFailure numOr calcCosts calcFeasibility computeCapacityOverlaps
 normalizeName reconcileInventory autoRepairInventory parseAgentJSON normalizeInventoryRow mapExcelRowsToCapacity mapExcelRowsToEngine
-mapExcelRowsToFGI callClaudeDirect callAIProviderViaProxy callAIProvider fetchOrgData pushNewProductToCloud syncBomToCloud syncCapacityToCloud`.split(/\s+/));
+mapExcelRowsToFGI __LANG __t __tf callClaudeDirect callAIProviderViaProxy callAIProvider fetchOrgData pushNewProductToCloud syncBomToCloud syncCapacityToCloud`.split(/\s+/));
 
 export function loadLogic() {
   const src = readAppSource();

@@ -4,7 +4,7 @@
   "private": true,
   "description": "CDT-PPC — Cognitive Digital Twin for Production Planning & Control (graduation project)",
   "scripts": {
-    "test": "node --test tests/logic.test.mjs tests/ui.test.mjs tests/sql.test.mjs tests/supply-chain.test.mjs",
+    "test": "node --test tests/logic.test.mjs tests/ui.test.mjs tests/sql.test.mjs tests/supply-chain.test.mjs tests/i18n.test.mjs",
     "test:logic": "node --test tests/logic.test.mjs",
     "test:ui": "node --test tests/ui.test.mjs",
     "test:sql": "node --test tests/sql.test.mjs"
