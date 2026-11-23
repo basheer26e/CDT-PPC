@@ -1,24 +1,40 @@
 # CDT-PPC — التوأم الرقمي المعرفي لتخطيط ومراقبة الإنتاج
 
-> **EN:** Cognitive Digital Twin for Production Planning & Control — a single-file web app (React in-browser) with MPS/MRP, capacity & maintenance modelling, what-if scenarios, AI planning agents, and an optional multi-tenant Supabase backend. Graduation project, Industrial & Manufacturing Systems Engineering.
+> **EN:** Cognitive Digital Twin for Production Planning & Control — a static web app (React, prebuilt — no CDN, no in-browser compilation) with MPS/MRP, capacity & maintenance modelling, what-if scenarios, AI planning agents, and an optional multi-tenant Supabase backend. Graduation project, Industrial & Manufacturing Systems Engineering.
 
 مشروع تخرج: نظام تخطيط إنتاج لمصنع (حالة دراسية: مصنع سمن) يحوّل الطلب الأسبوعي إلى خطة إنتاج رئيسية (MPS) ثم احتياج مواد (MRP)، مع الطاقة الإنتاجية والصيانة والتكاليف وسيناريوهات «ماذا لو؟» ووكلاء ذكاء اصطناعي يفسّرون الخطة.
 
 ## المحتويات
 
 ```
-index.html                          التطبيق كامل (ملف واحد — يُشغَّل مباشرة من المتصفح)
+index.html + assets/ + vendor/      الموقع الجاهز للنشر (مُولَّد من src بـ npm run build — لا يُعدَّل يدوياً)
+src/app.jsx                         كود التطبيق (المصدر الذي يُعدَّل)
+src/index.template.html             قالب الصفحة
+scripts/build.mjs                   البناء: يترجم JSX ويبني CSS لـTailwind وينسخ المكتبات
+scripts/safelist.json               أصناف CSS الديناميكية (يولّدها node scripts/collect-classes.mjs)
 sql/01_schema.sql                   قاعدة بيانات Supabase من الصفر (6 جداول + عزل RLS بين المصانع)
 sql/02_migration_multiplan.sql      ترحيل قاعدة قديمة فقط (قبل تعدد الخطط)
-sql/03_security_hardening.sql       إغلاق ثغرتي صلاحيات في قاعدة موجودة أصلاً
+sql/03_security_hardening.sql       إغلاق ثغرات صلاحيات في قاعدة موجودة أصلاً
 supabase/functions/ai-proxy/        دالة سحابية تُخفي مفتاح Gemini (للوضع السحابي، لم تُختبر على مشروع حقيقي)
-tests/                              اختبارات المنطق والواجهة وقاعدة البيانات (npm test)
+tests/                              اختبارات المنطق والواجهة وقاعدة البيانات والبناء والإقلاع (npm test)
 docs/TEST_REPORT.md                 تقرير الاختبار الكامل: ما أُصلح وما بقي معروفاً
 ```
 
+## التعديل والبناء
+
+عدّل `src/app.jsx` (أو القالب) ثم شغّل:
+```bash
+npm install      # مرة واحدة
+npm run build    # يُحدّث index.html و assets/ و vendor/
+npm test         # يتأكد أن الملفات المبنية محدّثة وكل شيء يعمل
+```
+ارفع للمستودع **كل** الملفات الناتجة (`index.html` و`assets/` و`vendor/` مع `src/`). اختبار «الحداثة» يفشل لو نسيت `npm run build`.
+
+**لماذا مبني مسبقاً؟** النسخة القديمة كانت تحمّل ستة سكربتات متزامنة من موقعين خارجيين (أكبرها Babel بحجم 2.8 ميغابايت) قبل أن يرسم المتصفح أي شيء؛ فإن بطؤ أو حُجب أحد المواقع بشبكة الزائر بقيت الصفحة سوداء. الآن كل شيء من موقعك نفسه، وشاشة التحميل تظهر فوراً، والترجمة تتم مرة واحدة عند البناء.
+
 ## التشغيل
 
-**محلياً:** افتح `index.html` في المتصفح (يحتاج إنترنت لتحميل المكتبات من CDN) ثم اضغط «المتابعة محلياً بدون تسجيل دخول». البيانات تُحفظ في متصفحك (`localStorage`).
+**محلياً:** افتح `index.html` في المتصفح (لا يحتاج إنترنت للتشغيل، فكل المكتبات داخل المستودع) ثم اضغط «المتابعة محلياً بدون تسجيل دخول». البيانات تُحفظ في متصفحك (`localStorage`).
 
 **على GitHub Pages:** Settings ← Pages ← Source: *Deploy from a branch* ← `main` / `/ (root)`. يظهر التطبيق على `https://<اسمك>.github.io/<المستودع>/`.
 
@@ -31,7 +47,7 @@ docs/TEST_REPORT.md                 تقرير الاختبار الكامل: م
 1. أنشئ مشروعاً في [supabase.com](https://supabase.com).
 2. من **SQL Editor** شغّل `sql/01_schema.sql` كاملاً (مرة واحدة على مشروع فاضٍ).
 3. أضف مصنعاً ومستخدماً بالقالب في القسم 4 من نفس الملف (أنشئ المستخدم من Authentication ← Users أولاً).
-4. في `index.html` ابحث عن `SUPABASE_URL` وضع رابط المشروع و**anon public key** (المفتاح العام مصمَّم ليظهر في المتصفح — الحماية الفعلية هي سياسات RLS. **لا تضع مفتاح `service_role` أبداً**).
+4. في `src/app.jsx` ابحث عن `SUPABASE_URL` وضع رابط المشروع و**anon public key** (المفتاح العام مصمَّم ليظهر في المتصفح — الحماية الفعلية هي سياسات RLS. **لا تضع مفتاح `service_role` أبداً**).
 5. (للذكاء الاصطناعي المركزي) انشر `supabase/functions/ai-proxy` بالخطوات في رأس ملفه.
 6. **تحقق بنفسك قبل أي استخدام حقيقي:** أنشئ مصنعين تجريبيين، وتأكد أن مستخدم المصنع ب لا يرى أي بيانات للمصنع أ.
 
@@ -44,7 +60,7 @@ npm install
 npm test
 ```
 
-تشغّل 50 اختباراً على الكود الفعلي داخل `index.html`: منطق MPS/MRP/الصيانة/ما-لو (مع اختبار عشوائي لـ3000 سيناريو يشمل أعطال الآلة وتأخير الموردين وصيانات متعددة)، الواجهة كاملة في jsdom (كل التبويبات، ما-لو، تقرير PDF، الدخول السحابي بعميل تجريبي)، واللغة (الواجهة الإنجليزية بلا أي حرف عربي في 26 صفحة والمعالج وتقرير PDF، وتبديل اللغة أثناء التشغيل)، وملفات SQL على Postgres حقيقي (PGlite) للعزل والأدوار، وتثبيت إصدارات المكتبات الخارجية، وإقلاع الصفحة الكاملة كما يفعل المتصفح (Babel يترجم الصفحة داخلها). تُشغَّل تلقائياً عند كل push عبر GitHub Actions.
+تشغّل 53 اختباراً على الكود الفعلي داخل `index.html`: منطق MPS/MRP/الصيانة/ما-لو (مع اختبار عشوائي لـ3000 سيناريو يشمل أعطال الآلة وتأخير الموردين وصيانات متعددة)، الواجهة كاملة في jsdom (كل التبويبات، ما-لو، تقرير PDF، الدخول السحابي بعميل تجريبي)، واللغة (الواجهة الإنجليزية بلا أي حرف عربي في 26 صفحة والمعالج وتقرير PDF، وتبديل اللغة أثناء التشغيل)، وملفات SQL على Postgres حقيقي (PGlite) للعزل والأدوار، وتثبيت مكتبة Supabase، وسلامة البناء (محدَّث، بلا مورد خارجي، شاشة التحميل أولاً، تغطية كل أصناف CSS المستخدمة)، وإقلاع الصفحة المبنية كما يفعل المتصفح مع محاكاة فشل تحميل الملفات. تُشغَّل تلقائياً عند كل push عبر GitHub Actions.
 
 ## اللغة
 

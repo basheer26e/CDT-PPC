@@ -4,18 +4,14 @@ import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { parse } from '@babel/parser';
 import * as standalone from '@babel/standalone';
-import { JSDOM } from 'jsdom';
 
 const ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
-export const htmlPath = path.join(ROOT, 'index.html');
+export const appPath = path.join(ROOT, 'src/app.jsx');
+export const templatePath = path.join(ROOT, 'src/index.template.html');
+export const builtHtmlPath = path.join(ROOT, 'index.html');
 
 export function readAppSource() {
-  // نقرأ السكربت بمحلّل HTML نفسه الذي تستخدمه المتصفحات (وليس بتعبير نمطي): لو ظهر </script> داخل الكود
-  // ينتهي السكربت هناك فيُقتطع الكود هنا أيضاً ويفشل الاختبار — كما كان سيحدث للمستخدم تماماً
-  const html = fs.readFileSync(htmlPath, 'utf8');
-  const el = new JSDOM(html).window.document.querySelector('script[type="text/babel"]');
-  if (!el) throw new Error('لم أجد <script type="text/babel"> في index.html');
-  return el.textContent;
+  return fs.readFileSync(appPath, 'utf8');
 }
 
 export function compileApp() {

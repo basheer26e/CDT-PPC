@@ -1,0 +1,29 @@
+# التبعيات
+node_modules/
+
+# أسرار — لا تُرفع أبداً
+.env
+.env.*
+*.key
+secrets.*
+supabase/.env
+supabase/.temp/
+
+# مفاتيح خدمة Supabase (service_role) إن حفظتِ ملفاً بها
+*service_role*
+
+# ملفات النظام والمحررات
+.DS_Store
+Thumbs.db
+.vscode/
+.idea/
+
+# نسخ احتياطية ومؤقتة
+*.bak
+*.tmp
+*.zip
+
+# بيانات حقيقية للمصنع (CSV/Excel) — تجنّبي رفعها
+data/
+*.xlsx
+*.xls
