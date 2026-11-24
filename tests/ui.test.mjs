@@ -49,12 +49,34 @@ function boot({ seed = SEED, code = compileApp(), beforeEval } = {}) {
   };
   return ui;
 }
-const goLocal = async (ui) => { await sleep(400); const b = [...ui.w.document.querySelectorAll('button')].find((x) => /المتابعة محلياً/.test(x.textContent)); assert.ok(b, 'زر المتابعة المحلية'); ui.click(b); await sleep(500); };
+// شاشة الدخول لا تظهر إلا لو كانت السحابة مُعَدّة؛ بدونها يدخل التطبيق مباشرة (انظر الاختبارين الجديدين أدناه)
+const goLocal = async (ui) => { await sleep(500); const b = [...ui.w.document.querySelectorAll('button')].find((x) => /المتابعة محلياً/.test(x.textContent)); if (b) { ui.click(b); await sleep(500); } };
 const generate = async (ui) => { const g = [...ui.w.document.querySelectorAll('button')].find((b) => /تشغيل النظام وإنشاء الخطة/.test(b.textContent)); assert.ok(g, 'زر توليد الخطة'); ui.click(g); await sleep(5000); };
 
 test('الكود يُترجم (JSX سليم) ويُقلع بلا انهيار', async () => {
   const ui = boot(); await goLocal(ui);
   assert.ok(!ui.boundary()); assert.deepEqual(ui.errors, []);
+});
+
+test('بلا إعداد سحابة: يدخل الزائر التطبيق مباشرة بلا نموذج دخول ولا رسالة تحذير', async () => {
+  const ui = boot(); await sleep(700);
+  const body = ui.body();
+  assert.ok(!/تسجيل الدخول|Sign in|SUPABASE_URL|المتابعة محلياً/.test(body), 'ظهر نموذج دخول: ' + body.slice(0, 120));
+  assert.match(body, /تشغيل النظام وإنشاء الخطة/, 'التطبيق نفسه ظاهر مباشرة (زر إنشاء الخطة)');
+  assert.deepEqual(ui.errors, []);
+});
+
+test('سحابة مُعَدّة بلا جلسة: تظهر شاشة الدخول مع «المتابعة محلياً» وتعمل', async () => {
+  const code = compileApp()
+    .replace('const SUPABASE_URL = "ضع-رابط-مشروعك-هنا";', 'const SUPABASE_URL = "https://test.supabase.co";')
+    .replace('const SUPABASE_ANON_KEY = "ضع-anon-public-key-هنا";', 'const SUPABASE_ANON_KEY = "' + 'k'.repeat(40) + '";');
+  const client = cloudClient(); client.auth.getSession = async () => ({ data: { session: null } });
+  const ui = boot({ seed: SEED, code, beforeEval: (w) => { w.supabase = { createClient: () => client }; } });
+  await sleep(1500);
+  assert.match(ui.body(), /تسجيل الدخول/, 'شاشة الدخول ظاهرة'); assert.ok(!/SUPABASE_URL/.test(ui.body()), 'لا تحذير إعداد');
+  const b = [...ui.w.document.querySelectorAll('button')].find((x) => /المتابعة محلياً/.test(x.textContent)); assert.ok(b, 'زر المتابعة المحلية موجود');
+  ui.click(b); await sleep(600);
+  assert.ok(!/تسجيل الدخول/.test(ui.body())); assert.ok(!ui.boundary()); assert.deepEqual(ui.errors, []);
 });
 
 test('توليد الخطة ثم فتح كل التبويبات وأزرار ما-لو بلا انهيار', async () => {

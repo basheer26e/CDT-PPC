@@ -38,7 +38,7 @@ function cloudClient() {
   return { from, functions: { invoke: async () => ({ data: { text: 'ok' }, error: null }) }, auth: { getSession: async () => ({ data: { session: { user: { id: 'u1', email: 'a@a' } } } }), onAuthStateChange: () => ({ data: { subscription: { unsubscribe() {} } } }), signOut: async () => ({}) } };
 }
 
-function boot(seedObj, { cloud = false } = {}) {
+function boot(seedObj, { cloud = false, noSession = false } = {}) {
   const errors = [], vc = new VirtualConsole();
   vc.on('jsdomError', (e) => errors.push(String(e.detail?.stack || e.message || e).slice(0, 300)));
   const dom = new JSDOM('<!DOCTYPE html><html><body><div id="loading"></div><div id="root"></div></body></html>', { url: 'http://localhost/', runScripts: 'outside-only', pretendToBeVisual: true, virtualConsole: vc });
@@ -47,7 +47,7 @@ function boot(seedObj, { cloud = false } = {}) {
   w.open = () => ({ document: { write() {}, close() {} } });
   Object.entries(seedObj).forEach(([k, v]) => w.localStorage.setItem(k, JSON.stringify(v)));
   let code = compileApp();
-  if (cloud) { code = code.replace('const SUPABASE_URL = "ضع-رابط-مشروعك-هنا";', 'const SUPABASE_URL = "https://test.supabase.co";').replace('const SUPABASE_ANON_KEY = "ضع-anon-public-key-هنا";', 'const SUPABASE_ANON_KEY = "' + 'k'.repeat(40) + '";'); w.supabase = { createClient: () => cloudClient() }; }
+  if (cloud) { code = code.replace('const SUPABASE_URL = "ضع-رابط-مشروعك-هنا";', 'const SUPABASE_URL = "https://test.supabase.co";').replace('const SUPABASE_ANON_KEY = "ضع-anon-public-key-هنا";', 'const SUPABASE_ANON_KEY = "' + 'k'.repeat(40) + '";'); w.supabase = { createClient: () => { const c = cloudClient(); if (noSession) c.auth.getSession = async () => ({ data: { session: null } }); return c; } }; }
   w.eval(code);
   const ui = {
     w, errors,
@@ -85,7 +85,7 @@ async function walk(ui, { deep = true } = {}) {
 
 async function run(ui, { goLocalRe, runRe, light = false }) {
   await sleep(400); ui.scan();
-  ui.click(ui.byText(goLocalRe)); await sleep(500); ui.scan();
+  { const gl = ui.byText(goLocalRe); if (gl) ui.click(gl); } await sleep(500); ui.scan();
   ui.click(ui.byText(runRe)); await sleep(5000); ui.scan();
   await walk(ui);
   if (light) { const t = ui.byText(/Light|فاتح/); if (t) { ui.click(t); await sleep(250); ui.scan(); await walk(ui, { deep: false }); } }
@@ -99,7 +99,7 @@ export async function crawlClasses() {
   ui = boot(seed({ base: 60000, rate: 70 })); await run(ui, { goLocalRe: /المتابعة محلياً/, runRe: /تشغيل النظام وإنشاء الخطة/, light: true }); add(ui);
   // 3) المعالج الأول ونافذة خطة جديدة (إنجليزي)
   ui = boot(seed({ lang: 'en', profile: false })); await sleep(400); ui.scan();
-  ui.click(ui.byText(/Continue locally/)); await sleep(600); ui.scan();
+  { const gl = ui.byText(/Continue locally/); if (gl) ui.click(gl); } await sleep(600); ui.scan();
   for (let q = 0; q < 3; q++) { const y = ui.buttons().find((x) => /Yes —|We keep safety/.test(x.textContent)); if (!y) break; ui.click(y); await sleep(300); ui.scan(); }
   const no = ui.buttons().find((x) => /^No —|^No —/.test(x.textContent.trim())); void no;
   const st = ui.byText(/Start using the system/); if (st) { ui.click(st); await sleep(500); ui.scan(); }
@@ -109,5 +109,7 @@ export async function crawlClasses() {
   ui = boot(seed({ lang: 'en' }), { cloud: true }); await sleep(1800); ui.scan();
   const rn = ui.byText(/Run the system and create the plan/); if (rn) { ui.click(rn); await sleep(5000); ui.scan(); await walk(ui); }
   add(ui);
+  // 5) شاشة الدخول (سحابة مُعَدّة بلا جلسة) بالإنجليزية والعربية
+  for (const lang of ['en', null]) { ui = boot(seed({ lang }), { cloud: true, noSession: true }); await sleep(1500); ui.scan(); add(ui); }
   return all;
 }

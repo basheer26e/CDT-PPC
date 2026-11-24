@@ -2316,10 +2316,10 @@ function Root() {
     cloudSeed: null,
     supabaseClient: null
   });
-  if (libState === "skip") return /*#__PURE__*/React.createElement(LoginScreen, {
-    client: null,
-    unavailableReason: __t("لسا ما أعدّيت SUPABASE_URL/ANON_KEY بالكود", "SUPABASE_URL/ANON_KEY are not set in the code yet"),
-    onSkip: () => setLocalMode(true)
+  // السحابة غير مُعَدّة (الوضع الافتراضي للنشر على GitHub Pages): ندخل التطبيق مباشرة — لا نعرض نموذج دخول لا يعمل
+  if (libState === "skip") return /*#__PURE__*/React.createElement(App, {
+    cloudSeed: null,
+    supabaseClient: null
   });
   if (libState === "loading") return /*#__PURE__*/React.createElement("div", {
     className: "min-h-screen flex items-center justify-center bg-slate-950 text-slate-400 text-sm"

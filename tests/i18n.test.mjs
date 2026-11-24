@@ -27,14 +27,15 @@ const BASE = {
 };
 const PROFILE = { 'cdt:planningprofile': { hasBOM: true, hasFGI: true, hasMaintenance: true } };
 
-function boot(seed) {
+function boot(seed, opts = {}) {
   const errors = [], vc = new VirtualConsole();
   vc.on('jsdomError', (e) => errors.push(String(e.detail?.stack || e.message || e).slice(0, 300)));
   const dom = new JSDOM('<!DOCTYPE html><html><body><div id="loading"></div><div id="root"></div></body></html>', { url: 'http://localhost/', runScripts: 'outside-only', pretendToBeVisual: true, virtualConsole: vc });
   const w = dom.window; w.eval(REACT); w.eval(REACT_DOM);
   w.XLSX = {}; w.Papa = { parse: () => ({ data: [] }) }; w.print = () => {}; w.fetch = () => Promise.reject(new Error('offline'));
   Object.entries(seed).forEach(([k, v]) => w.localStorage.setItem(k, JSON.stringify(v)));
-  w.eval(compileApp());
+  opts.beforeEval?.(w);
+  w.eval(opts.transform ? opts.transform(compileApp()) : compileApp());
   const ui = {
     w, errors,
     body: () => w.document.body.textContent.replace(/\s+/g, ' '),
@@ -64,7 +65,7 @@ const report = (ui) => [...ui.leaks].map(([t, w]) => `[${w}] ${t}`).join('\n');
 test('الواجهة الإنجليزية: لا نص عربي بأي تبويب ولا نافذة (26 صفحة + المعالج + خطة جديدة)', async () => {
   const ui = boot({ 'cdt:lang': 'en', ...BASE, ...PROFILE });
   await sleep(400); ui.scan('login');
-  ui.click(ui.byText(/Continue locally/)); await sleep(500); ui.scan('start');
+  { const gl = ui.byText(/Continue locally/); if (gl) ui.click(gl); } await sleep(500); ui.scan('start');
   ui.click(ui.byText(/Run the system and create the plan/)); await sleep(5000); ui.scan('after-plan');
   const groups = ui.labels().filter((t) => /[◂▾]\s*$/.test(t)).map(ui.strip);
   assert.ok(groups.length >= 5, 'مجموعات التنقل: ' + groups.join(' | '));
@@ -82,7 +83,7 @@ test('الواجهة الإنجليزية: لا نص عربي بأي تبويب 
 test('الواجهة الإنجليزية: معالج الأسئلة الأولى ونافذة «خطة جديدة» بلا نص عربي', async () => {
   const ui = boot({ 'cdt:lang': 'en', ...BASE });   // بلا ملف تخطيط ← يظهر المعالج
   await sleep(400);
-  ui.click(ui.byText(/Continue locally/)); await sleep(600); ui.scan('wizard-q1');
+  { const gl = ui.byText(/Continue locally/); if (gl) ui.click(gl); } await sleep(600); ui.scan('wizard-q1');
   for (let q = 0; q < 3; q++) { const yes = ui.buttons().find((x) => /Yes —|We keep safety/.test(x.textContent)); assert.ok(yes, 'زر إجابة المعالج ' + q); ui.click(yes); await sleep(300); ui.scan('wizard-q' + (q + 1)); }
   ui.click(ui.byText(/Start using the system/)); await sleep(500); ui.scan('wizard-done');
   ui.click(ui.buttons().find((x) => /▾/.test(x.textContent))); await sleep(250);
@@ -96,7 +97,7 @@ test('الواجهة الإنجليزية: معالج الأسئلة الأول�
 test('تبديل اللغة أثناء التشغيل يحدّث حتى النصوص المحسوبة (جدوى، صيانة) ذهاباً وإياباً', async () => {
   const ui = boot({ ...BASE, ...PROFILE });   // عربي افتراضياً
   await sleep(400);
-  ui.click(ui.byText(/المتابعة محلياً/)); await sleep(500);
+  { const gl = ui.byText(/المتابعة محلياً/); if (gl) ui.click(gl); } await sleep(500);
   ui.click(ui.byText(/تشغيل النظام وإنشاء الخطة/)); await sleep(5000);
   const groups = ui.labels().filter((t) => /[◂▾]\s*$/.test(t)).map(ui.strip);
   await openTab(ui, 'تقرير الجدوى', groups);
@@ -127,7 +128,7 @@ test('تقرير PDF بالإنجليزية: بلا أي حرف عربي، ات�
     const ui = boot(seed);
     ui.w.open = () => ({ document: { write: (h) => { html += h; }, close() {} } });
     await sleep(400);
-    ui.click(ui.byText(lang === 'en' ? /Continue locally/ : /المتابعة محلياً/)); await sleep(500);
+    { const gl = ui.byText(lang === 'en' ? /Continue locally/ : /المتابعة محلياً/); if (gl) ui.click(gl); } await sleep(500);
     ui.click(ui.byText(lang === 'en' ? /Run the system and create the plan/ : /تشغيل النظام وإنشاء الخطة/)); await sleep(5000);
     const groups = ui.labels().filter((t) => /[◂▾]\s*$/.test(t)).map(ui.strip);
     await openTab(ui, lang === 'en' ? 'PDF & Email' : 'PDF وإرسال', groups);
@@ -144,4 +145,15 @@ test('تقرير PDF بالإنجليزية: بلا أي حرف عربي، ات�
   const ar = await run('ar');
   assert.match(ar, /dir="rtl" lang="ar"/); assert.match(ar, /تقرير تخطيط الإنتاج والتحكم/);
   assert.ok(!/undefined|NaN|Infinity|\{\d+\}/.test(ar));
+});
+
+test('شاشة الدخول (عند إعداد السحابة بلا جلسة): بلا نص عربي بالإنجليزية', async () => {
+  const noSession = { from: () => ({}), functions: { invoke: async () => ({}) }, auth: { getSession: async () => ({ data: { session: null } }), onAuthStateChange: () => ({ data: { subscription: { unsubscribe() {} } } }), signOut: async () => ({}) } };
+  const ui = boot({ 'cdt:lang': 'en', ...BASE, ...PROFILE }, {
+    transform: (c) => c.replace('const SUPABASE_URL = "ضع-رابط-مشروعك-هنا";', 'const SUPABASE_URL = "https://test.supabase.co";').replace('const SUPABASE_ANON_KEY = "ضع-anon-public-key-هنا";', 'const SUPABASE_ANON_KEY = "' + 'k'.repeat(40) + '";'),
+    beforeEval: (w) => { w.supabase = { createClient: () => noSession }; },
+  });
+  await sleep(1500); ui.scan('login');
+  assert.match(ui.body(), /Sign in/); assert.match(ui.body(), /Continue locally/);
+  assert.equal(ui.leaks.size, 0, report(ui)); assert.deepEqual(ui.errors, []);
 });

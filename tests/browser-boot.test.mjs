@@ -22,7 +22,7 @@ class Local extends ResourceLoader {
   }
 }
 
-async function bootPage({ lang, blocked = [], waitFor = /Continue locally|المتابعة محلياً/ } = {}) {
+async function bootPage({ lang, blocked = [], waitFor = /Before we start|قبل ما نبدأ/ } = {}) {
   const errors = [], vc = new VirtualConsole();
   vc.on('jsdomError', (e) => errors.push(String(e.detail?.stack || e.message || e).slice(0, 400)));
   const loader = new Local(blocked);
@@ -37,7 +37,8 @@ async function bootPage({ lang, blocked = [], waitFor = /Continue locally|الم
 
 test('الصفحة المبنية تُقلع بالعربية: تختفي شاشة التحميل وتظهر شاشة الدخول (بلا Babel وبلا CDN)', async () => {
   const { w, errors, text, loader } = await bootPage();
-  assert.match(text, /المتابعة محلياً/, 'التطبيق لم يبدأ: ' + text.slice(0, 120));
+  assert.match(text, /قبل ما نبدأ/, 'التطبيق لم يبدأ: ' + text.slice(0, 120));
+  assert.ok(!/تسجيل الدخول|Sign in|SUPABASE_URL/.test(text), 'لا نموذج دخول بلا سحابة مُعَدّة');
   assert.equal(w.document.getElementById('loading').style.display, 'none');
   assert.deepEqual(errors, []);
   assert.ok(loader.loaded.some((f) => f.startsWith('assets/app.js')) && loader.loaded.some((f) => f.includes('react-18.2.0')), 'حُمّلت الملفات المحلية: ' + loader.loaded.join(', '));
@@ -45,8 +46,8 @@ test('الصفحة المبنية تُقلع بالعربية: تختفي شاش
 });
 
 test('الصفحة المبنية تُقلع بالإنجليزية', async () => {
-  const { w, text, errors } = await bootPage({ lang: 'en', waitFor: /Continue locally/ });
-  assert.match(text, /Continue locally/); assert.equal(w.document.getElementById('loading').style.display, 'none'); assert.deepEqual(errors, []);
+  const { w, text, errors } = await bootPage({ lang: 'en', waitFor: /Before we start/ });
+  assert.match(text, /Before we start/); assert.ok(!/Sign in/.test(text)); assert.equal(w.document.getElementById('loading').style.display, 'none'); assert.deepEqual(errors, []);
 });
 
 test('فشل تحميل ملف يُظهر رسالة واضحة بدل شاشة تحميل صامتة', async () => {

@@ -1599,7 +1599,8 @@ function Root() {
   }, [session, client]);
 
   if (localMode) return <App cloudSeed={null} supabaseClient={null} />;
-  if (libState === "skip") return <LoginScreen client={null} unavailableReason={__t("لسا ما أعدّيت SUPABASE_URL/ANON_KEY بالكود", "SUPABASE_URL/ANON_KEY are not set in the code yet")} onSkip={() => setLocalMode(true)} />;
+  // السحابة غير مُعَدّة (الوضع الافتراضي للنشر على GitHub Pages): ندخل التطبيق مباشرة — لا نعرض نموذج دخول لا يعمل
+  if (libState === "skip") return <App cloudSeed={null} supabaseClient={null} />;
   if (libState === "loading") return <div className="min-h-screen flex items-center justify-center bg-slate-950 text-slate-400 text-sm">{__t("جارٍ التحقق من إعداد السحابة... (يمكنك المتابعة محلياً من الشاشة التالية لو تأخّر)", "Checking the cloud setup... (you can continue locally from the next screen if it takes long)")}</div>;
   if (libState === "failed") return <LoginScreen client={null} unavailableReason={__t("تعذّر تحميل مكتبة Supabase الآن (اتصال/شبكة) — استخدم المتابعة المحلية بالأسفل", "Could not load the Supabase library now (connection/network) — use local mode below")} onSkip={() => setLocalMode(true)} />;
   if (session === undefined) return <div className="min-h-screen flex items-center justify-center bg-slate-950 text-slate-400 text-sm">{__t("جارٍ التحقق من الجلسة...", "Checking the session...")}</div>;
