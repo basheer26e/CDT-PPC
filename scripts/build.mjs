@@ -53,13 +53,23 @@ html = html.replace('<!--CSS-->', `<link rel="stylesheet" href="assets/tailwind.
   .replace('<!--VENDOR-->', VENDOR.map((v) => `<script ${v.defer ? 'defer ' : ''}src="vendor/${v.out}"></script>`).join('\n'))
   .replace('<!--APP-->', `<script src="assets/app.js?v=${jsHash}"></script>`);
 
+// 3ب) نسخة مستقلة بملف واحد (للعرض والمشاركة بلا إنترنت ولا استضافة): كل شيء مضمَّن داخل HTML.
+//     escape: </script داخل الكود المضمَّن كان سيُنهي السكربت مبكراً بالمتصفح، و<!-- قد يغيّر حالة محلّل HTML.
+const inline = (code) => code.replace(/<\/script/gi, '<\\/script').replace(/<!--/g, '<\\!--');
+const standalone1 = fs.readFileSync(tplPath, 'utf8')
+  .replace('<!--CSS-->', () => `<style>\n${css}\n</style>`)
+  .replace('<!--VENDOR-->', () => VENDOR.map((v) => `<script>\n${inline(fs.readFileSync(path.join(ROOT, 'node_modules', v.from), 'utf8'))}\n</script>`).join('\n'))
+  .replace('<!--APP-->', () => `<script>\n${inline(js)}\n</script>`);
+
 // 4) الكتابة
 fs.mkdirSync(path.join(OUT, 'assets'), { recursive: true });
 fs.mkdirSync(path.join(OUT, 'vendor'), { recursive: true });
 for (const f of fs.readdirSync(path.join(OUT, 'vendor'))) if (!VENDOR.some((v) => v.out === f)) fs.rmSync(path.join(OUT, 'vendor', f));
 fs.writeFileSync(path.join(OUT, 'index.html'), html);
+fs.mkdirSync(path.join(OUT, 'downloads'), { recursive: true });
+fs.writeFileSync(path.join(OUT, 'downloads/CDT-PPC-offline.html'), standalone1);
 fs.writeFileSync(path.join(OUT, 'assets/app.js'), js);
 fs.writeFileSync(path.join(OUT, 'assets/tailwind.css'), css);
 for (const v of VENDOR) fs.copyFileSync(path.join(ROOT, 'node_modules', v.from), path.join(OUT, 'vendor', v.out));
 const kb = (n) => (n / 1024).toFixed(0) + ' KB';
-console.log(`built → ${OUT}\n  index.html ${kb(html.length)} | assets/app.js ${kb(js.length)} (v=${jsHash}) | assets/tailwind.css ${kb(css.length)} (v=${cssHash}) | vendor ${VENDOR.length} files`);
+console.log(`built → ${OUT}\n  index.html ${kb(html.length)} | assets/app.js ${kb(js.length)} (v=${jsHash}) | assets/tailwind.css ${kb(css.length)} (v=${cssHash}) | vendor ${VENDOR.length} files | downloads/CDT-PPC-offline.html ${kb(standalone1.length)}`);
