@@ -1324,7 +1324,7 @@ function MiniHBarChart({ data, height = 180 }) {
 const UI = {
   ar: {
     brandTitle: "🏭 CDT-PPC",
-    brandSubtitle: "Cognitive Digital Twin | نظام تخطيط وتحكم إنتاجي مستقل",
+    brandSubtitle: "Cognitive Digital Twin for Production Planning Using AI Agents",
     waitingSales: "⏸ انتظار خطة المبيعات",
     processing: "🔄 معالجة...",
     readyConfirm: "📋 جاهزة — بانتظار التأكيد",
@@ -1335,7 +1335,7 @@ const UI = {
   },
   en: {
     brandTitle: "🏭 CDT-PPC",
-    brandSubtitle: "Cognitive Digital Twin | Independent Production Planning & Control System",
+    brandSubtitle: "Cognitive Digital Twin for Production Planning Using AI Agents",
     waitingSales: "⏸ Waiting for sales plan",
     processing: "🔄 Processing...",
     readyConfirm: "📋 Ready — awaiting confirmation",
@@ -4083,6 +4083,16 @@ ${priorSummaryLines}
               <div className="text-xs text-slate-400 mb-2">{__t("اضغط أي زر لتبديل الإجابة فوراً: تتغير الحسابات والتبويبات المرتبطة بها مباشرة، وتبقى بياناتكم المُدخَلة محفوظة كما هي، فتقدرون تقارنون الخطة بين الحالتين.", "Press any button to flip the answer instantly: the related calculations and tabs change right away, and your entered data stays saved, so you can compare the plan between the two cases.")}</div>
               <button onClick={() => setPlanningProfile(mkPlanningProfile())} className="text-xs bg-cyan-800/60 hover:bg-cyan-800 border border-cyan-700 text-cyan-200 px-3 py-1.5 rounded-lg font-bold">{__t("🔄 إعادة الإجابة على أسئلة نوع التخطيط", "🔄 Re-answer the planning-type questions")}</button>
             </div>
+            <div className="bg-violet-950/30 border border-violet-700 rounded-xl p-4">
+              <h3 className="text-sm font-bold text-violet-300 mb-2">{__t("🚀 التحول الرقمي بوكلاء الذكاء الاصطناعي", "🚀 Digital transformation with AI agents")}</h3>
+              <div className="space-y-1.5 text-xs text-violet-100">
+                <div>{__t("• من تقدير المخطط إلى نموذج رقمي واحد: الطلب ثم الخطة الرئيسية ثم المواد والطاقة والصيانة في نظام متصل، وليس في جداول منفصلة.", "• From the planner's estimate to one digital model: demand, master plan, materials, capacity and maintenance in a connected system instead of separate spreadsheets.")}</div>
+                <div>{__t("• من رد الفعل إلى الاستباق: تنبيهات «فات أوان الطلب» وسيناريوهات «ماذا لو» تظهر المشكلة قبل وقوعها.", "• From reacting to anticipating: 'too late to order' alerts and what-if scenarios show the problem before it happens.")}</div>
+                <div>{__t("• أربعة وكلاء ذكاء اصطناعي متسلسلين: وكيل MPS، ثم وكيل MRP، ثم وكيل الصيانة وFGI، ثم كبير المخططين. كل وكيل يبني على تحليل سابقه.", "• Four chained AI agents: MPS agent, then MRP agent, then Maintenance + FGI agent, then the Chief planner. Each builds on the previous analysis.")}</div>
+                <div>{__t("• لا صندوق أسود: كل وكيل يعرض بياناته وقواعده واستدلاله عبر «لماذا هذا القرار؟»، ويُستدعى فقط إذا كان محوره ينطبق على المصنع.", "• No black box: every agent shows its data, rules and reasoning via 'Why this decision?', and runs only if its area applies to the plant.")}</div>
+                <div>{__t("• اقتراح كبير المخططين يُحاكى فعلياً ويُقارن بالخطة الأساسية، فالقرار مبني على أرقام وليس على نص عام.", "• The Chief planner's proposal is actually simulated and compared with the base plan, so the decision rests on numbers, not generic text.")}</div>
+              </div>
+            </div>
             <div className="bg-emerald-950/30 border border-emerald-700 rounded-xl p-4">
               <h3 className="text-sm font-bold text-emerald-300 mb-2">{__t("✅ نظام مستقل بالكامل", "✅ A fully independent system")}</h3>
               <div className="space-y-1 text-xs text-emerald-200">
@@ -4104,7 +4114,7 @@ ${priorSummaryLines}
             </div>
             <div className="bg-blue-950/30 border border-blue-700 rounded-xl p-4 text-xs text-blue-200">
               <div className="font-semibold text-blue-300 mb-2">{__t("🎓 مشروع تخرج — هندسة صناعية ونظم تصنيع", "🎓 Graduation project — Industrial & Manufacturing Systems Engineering")}</div>
-              <div>{__t("Cognitive Digital Twin لتخطيط الإنتاج والتحكم", "Cognitive Digital Twin for production planning & control")}{orgLabel.productName ? " — " + orgLabel.productName : ""}</div>
+              <div className="font-semibold text-slate-100 tracking-wide" dir="ltr">COGNITIVE DIGITAL TWIN FOR PRODUCTION PLANNING USING AI AGENTS{orgLabel.productName ? " — " + orgLabel.productName : ""}</div>
               <div className="mt-3 pt-3 border-t border-blue-800/60">
                 <div className="font-semibold text-blue-300 mb-1.5">{__t("فريق العمل", "Project team")}</div>
                 <div className="flex flex-wrap gap-x-4 gap-y-1" dir="ltr">

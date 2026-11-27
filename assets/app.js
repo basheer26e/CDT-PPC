@@ -1882,7 +1882,7 @@ function MiniHBarChart({
 const UI = {
   ar: {
     brandTitle: "🏭 CDT-PPC",
-    brandSubtitle: "Cognitive Digital Twin | نظام تخطيط وتحكم إنتاجي مستقل",
+    brandSubtitle: "Cognitive Digital Twin for Production Planning Using AI Agents",
     waitingSales: "⏸ انتظار خطة المبيعات",
     processing: "🔄 معالجة...",
     readyConfirm: "📋 جاهزة — بانتظار التأكيد",
@@ -1893,7 +1893,7 @@ const UI = {
   },
   en: {
     brandTitle: "🏭 CDT-PPC",
-    brandSubtitle: "Cognitive Digital Twin | Independent Production Planning & Control System",
+    brandSubtitle: "Cognitive Digital Twin for Production Planning Using AI Agents",
     waitingSales: "⏸ Waiting for sales plan",
     processing: "🔄 Processing...",
     readyConfirm: "📋 Ready — awaiting confirmation",
@@ -6388,6 +6388,12 @@ ${priorSummaryLines}
     onClick: () => setPlanningProfile(mkPlanningProfile()),
     className: "text-xs bg-cyan-800/60 hover:bg-cyan-800 border border-cyan-700 text-cyan-200 px-3 py-1.5 rounded-lg font-bold"
   }, __t("🔄 إعادة الإجابة على أسئلة نوع التخطيط", "🔄 Re-answer the planning-type questions"))), /*#__PURE__*/React.createElement("div", {
+    className: "bg-violet-950/30 border border-violet-700 rounded-xl p-4"
+  }, /*#__PURE__*/React.createElement("h3", {
+    className: "text-sm font-bold text-violet-300 mb-2"
+  }, __t("🚀 التحول الرقمي بوكلاء الذكاء الاصطناعي", "🚀 Digital transformation with AI agents")), /*#__PURE__*/React.createElement("div", {
+    className: "space-y-1.5 text-xs text-violet-100"
+  }, /*#__PURE__*/React.createElement("div", null, __t("• من تقدير المخطط إلى نموذج رقمي واحد: الطلب ثم الخطة الرئيسية ثم المواد والطاقة والصيانة في نظام متصل، وليس في جداول منفصلة.", "• From the planner's estimate to one digital model: demand, master plan, materials, capacity and maintenance in a connected system instead of separate spreadsheets.")), /*#__PURE__*/React.createElement("div", null, __t("• من رد الفعل إلى الاستباق: تنبيهات «فات أوان الطلب» وسيناريوهات «ماذا لو» تظهر المشكلة قبل وقوعها.", "• From reacting to anticipating: 'too late to order' alerts and what-if scenarios show the problem before it happens.")), /*#__PURE__*/React.createElement("div", null, __t("• أربعة وكلاء ذكاء اصطناعي متسلسلين: وكيل MPS، ثم وكيل MRP، ثم وكيل الصيانة وFGI، ثم كبير المخططين. كل وكيل يبني على تحليل سابقه.", "• Four chained AI agents: MPS agent, then MRP agent, then Maintenance + FGI agent, then the Chief planner. Each builds on the previous analysis.")), /*#__PURE__*/React.createElement("div", null, __t("• لا صندوق أسود: كل وكيل يعرض بياناته وقواعده واستدلاله عبر «لماذا هذا القرار؟»، ويُستدعى فقط إذا كان محوره ينطبق على المصنع.", "• No black box: every agent shows its data, rules and reasoning via 'Why this decision?', and runs only if its area applies to the plant.")), /*#__PURE__*/React.createElement("div", null, __t("• اقتراح كبير المخططين يُحاكى فعلياً ويُقارن بالخطة الأساسية، فالقرار مبني على أرقام وليس على نص عام.", "• The Chief planner's proposal is actually simulated and compared with the base plan, so the decision rests on numbers, not generic text.")))), /*#__PURE__*/React.createElement("div", {
     className: "bg-emerald-950/30 border border-emerald-700 rounded-xl p-4"
   }, /*#__PURE__*/React.createElement("h3", {
     className: "text-sm font-bold text-emerald-300 mb-2"
@@ -6413,7 +6419,10 @@ ${priorSummaryLines}
     className: "bg-blue-950/30 border border-blue-700 rounded-xl p-4 text-xs text-blue-200"
   }, /*#__PURE__*/React.createElement("div", {
     className: "font-semibold text-blue-300 mb-2"
-  }, __t("🎓 مشروع تخرج — هندسة صناعية ونظم تصنيع", "🎓 Graduation project — Industrial & Manufacturing Systems Engineering")), /*#__PURE__*/React.createElement("div", null, __t("Cognitive Digital Twin لتخطيط الإنتاج والتحكم", "Cognitive Digital Twin for production planning & control"), orgLabel.productName ? " — " + orgLabel.productName : ""), /*#__PURE__*/React.createElement("div", {
+  }, __t("🎓 مشروع تخرج — هندسة صناعية ونظم تصنيع", "🎓 Graduation project — Industrial & Manufacturing Systems Engineering")), /*#__PURE__*/React.createElement("div", {
+    className: "font-semibold text-slate-100 tracking-wide",
+    dir: "ltr"
+  }, "COGNITIVE DIGITAL TWIN FOR PRODUCTION PLANNING USING AI AGENTS", orgLabel.productName ? " — " + orgLabel.productName : ""), /*#__PURE__*/React.createElement("div", {
     className: "mt-3 pt-3 border-t border-blue-800/60"
   }, /*#__PURE__*/React.createElement("div", {
     className: "font-semibold text-blue-300 mb-1.5"
