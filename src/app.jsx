@@ -4062,12 +4062,25 @@ ${priorSummaryLines}
             <SH>{T.about}</SH>
             <div className="bg-cyan-950/20 border border-cyan-800/50 rounded-xl p-4">
               <h3 className="text-sm font-bold text-cyan-300 mb-2">{__t("🧭 ملف تخطيط الشركة الحالي", "🧭 The company's current planning profile")}</h3>
-              <div className="space-y-1 text-xs text-cyan-100 mb-3">
-                <div>{__t("• تتبّع مواد خام (BOM):", "• Raw-material tracking (BOM):")} <b>{planningProfile.hasBOM ? __t("نعم", "Yes") : __t("لا", "No")}</b></div>
-                <div>{__t("• مخزون أمان للمنتج النهائي (FGI):", "• Finished-product safety stock (FGI):")} <b>{planningProfile.hasFGI ? __t("نعم", "Yes") : __t("لا", "No")}</b></div>
-                <div>{__t("• صيانة دورية بالساعات:", "• Periodic maintenance by hours:")} <b>{planningProfile.hasMaintenance ? __t("نعم", "Yes") : __t("لا", "No")}</b></div>
+              <div className="space-y-2 mb-3">
+                {[
+                  { key: "hasBOM", label: __t("تتبّع مواد خام (BOM)", "Raw-material tracking (BOM)"), onTxt: __t("مفعّل: المخزون وطلبات الشراء وMRP تؤثر على الخطة وتظهر تنبيهات «فات أوان الطلب».", "On: inventory, purchase orders and MRP shape the plan and 'too late to order' alerts appear."), offTxt: __t("متوقف: إنتاج مباشر بلا قيود مواد خام.", "Off: direct production with no raw-material constraints.") },
+                  { key: "hasFGI", label: __t("مخزون أمان للمنتج النهائي (FGI)", "Finished-product safety stock (FGI)"), onTxt: __t("مفعّل: يُنتج قبل وصول الطلب الفعلي مع Push/Pull/Hybrid.", "On: produces ahead of confirmed demand, with Push/Pull/Hybrid."), offTxt: __t("متوقف: إنتاج حسب الطلب المؤكد فقط بلا حاجز مخزون.", "Off: make-to-order only, no finished-goods buffer.") },
+                  { key: "hasMaintenance", label: __t("صيانة دورية بالساعات", "Periodic maintenance by hours"), onTxt: __t("مفعّل: تدخل ساعات الصيانة في الطاقة والخطة.", "On: maintenance hours reduce capacity and enter the plan."), offTxt: __t("متوقف: تُحذف الصيانة من الحسابات.", "Off: maintenance is removed from the calculations.") },
+                ].map((q) => {
+                  const on = !!planningProfile[q.key];
+                  return (
+                    <div key={q.key} className="flex items-start justify-between gap-3 bg-slate-900/40 border border-slate-700 rounded-lg p-2.5">
+                      <div className="min-w-0">
+                        <div className="text-xs font-bold text-cyan-100">{q.label}</div>
+                        <div className="text-[11px] text-slate-400 mt-0.5">{on ? q.onTxt : q.offTxt}</div>
+                      </div>
+                      <button type="button" role="switch" aria-checked={on} onClick={() => setPlanningProfile({ ...planningProfile, [q.key]: !on })} className={"shrink-0 text-xs font-bold px-3 py-1.5 rounded-lg border " + (on ? "bg-emerald-700/60 border-emerald-600 text-emerald-100 hover:bg-emerald-700" : "bg-slate-700/60 border-slate-600 text-slate-300 hover:bg-slate-700")}>{on ? __t("✓ نعم", "✓ Yes") : __t("✗ لا", "✗ No")}</button>
+                    </div>
+                  );
+                })}
               </div>
-              <div className="text-xs text-slate-400 mb-2">{__t("تغيير أي إجابة يُظهر أو يُخفي التبويبات المرتبطة بها فوراً — بياناتكم المُدخَلة مسبقاً (BOM، FGI، الصيانة) تبقى محفوظة كما هي حتى لو أعدتم تفعيلها لاحقاً.", "Changing any answer instantly shows or hides the tabs related to it — your previously entered data (BOM, FGI, maintenance) stays saved as it is even if you re-enable them later.")}</div>
+              <div className="text-xs text-slate-400 mb-2">{__t("اضغط أي زر لتبديل الإجابة فوراً: تتغير الحسابات والتبويبات المرتبطة بها مباشرة، وتبقى بياناتكم المُدخَلة محفوظة كما هي، فتقدرون تقارنون الخطة بين الحالتين.", "Press any button to flip the answer instantly: the related calculations and tabs change right away, and your entered data stays saved, so you can compare the plan between the two cases.")}</div>
               <button onClick={() => setPlanningProfile(mkPlanningProfile())} className="text-xs bg-cyan-800/60 hover:bg-cyan-800 border border-cyan-700 text-cyan-200 px-3 py-1.5 rounded-lg font-bold">{__t("🔄 إعادة الإجابة على أسئلة نوع التخطيط", "🔄 Re-answer the planning-type questions")}</button>
             </div>
             <div className="bg-emerald-950/30 border border-emerald-700 rounded-xl p-4">
