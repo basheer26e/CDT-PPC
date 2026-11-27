@@ -2637,7 +2637,7 @@ ${priorSummaryLines}
       <div className="shrink-0 bg-slate-900 border-b border-slate-700 px-4 py-2.5 flex items-center justify-between flex-wrap gap-2">
         <div className="flex items-center gap-3">
           <div>
-            <div className="text-base font-bold text-blue-400">{U.brandTitle} — {orgLabel.productName}</div>
+            <div className="text-base font-bold text-blue-400">{U.brandTitle}{orgLabel.productName ? " — " + orgLabel.productName : ""}</div>
             <div className="text-xs text-slate-500">{U.brandSubtitle}</div>
           </div>
           <div className="relative">
@@ -4086,8 +4086,8 @@ ${priorSummaryLines}
             <div className="bg-emerald-950/30 border border-emerald-700 rounded-xl p-4">
               <h3 className="text-sm font-bold text-emerald-300 mb-2">{__t("✅ نظام مستقل بالكامل", "✅ A fully independent system")}</h3>
               <div className="space-y-1 text-xs text-emerald-200">
-                <div>{__t("• ملف HTML واحد يعمل من أي متصفح — بدون خادم، بدون تثبيت", "• A single HTML file that works from any browser — no server, no installation")}</div>
-                <div>{__t("• الوكلاء الذكية عبر Gemini API مباشرة (مجاني) — بدون وسيط", "• Smart agents via the Gemini API directly (free) — no intermediary")}</div>
+                <div>{__t("• تطبيق ويب يعمل بالكامل داخل المتصفح — بدون تثبيت وبدون خادم خاص", "• A web app that runs entirely in your browser — no installation, no dedicated server")}</div>
+                <div>{__t("• الوكلاء الذكية تتصل بـ Gemini API مباشرة من متصفحك في الوضع المحلي (مجاني)", "• Smart agents call the Gemini API directly from your browser in local mode (free)")}</div>
                 <div>{__t("• البيانات تُحفظ في متصفحك محلياً (localStorage)", "• Data is saved locally in your browser (localStorage)")}</div>
                 <div>{__t("• استيراد البيانات: Excel أو Google Sheets مباشرة", "• Data import: Excel or Google Sheets directly")}</div>
               </div>
@@ -4103,8 +4103,16 @@ ${priorSummaryLines}
               </div>
             </div>
             <div className="bg-blue-950/30 border border-blue-700 rounded-xl p-4 text-xs text-blue-200">
-              <div className="font-semibold text-blue-300 mb-2">{__t("🎓 مشروع تخرج — هندسة صناعية", "🎓 Graduation project — Industrial Engineering")}</div>
-              <div>{__t("Cognitive Digital Twin لتخطيط الإنتاج والتحكم —", "Cognitive Digital Twin for production planning & control —")} {orgLabel.productName}</div>
+              <div className="font-semibold text-blue-300 mb-2">{__t("🎓 مشروع تخرج — هندسة صناعية ونظم تصنيع", "🎓 Graduation project — Industrial & Manufacturing Systems Engineering")}</div>
+              <div>{__t("Cognitive Digital Twin لتخطيط الإنتاج والتحكم", "Cognitive Digital Twin for production planning & control")}{orgLabel.productName ? " — " + orgLabel.productName : ""}</div>
+              <div className="mt-3 pt-3 border-t border-blue-800/60">
+                <div className="font-semibold text-blue-300 mb-1.5">{__t("فريق العمل", "Project team")}</div>
+                <div className="flex flex-wrap gap-x-4 gap-y-1" dir="ltr">
+                  {["Basheer Hassan", "Ahmed Al-Musannaf", "Abduljaleel Abdullah", "Safwan Fahd", "Rawaa Al-Kamali"].map((n) => <span key={n}>{n}</span>)}
+                </div>
+                <div className="mt-3 text-blue-300/90">{__t("🏛️ جامعة تعز — 2026", "🏛️ Taiz University — 2026")}</div>
+                <div className="mt-1 text-slate-400">{__t("📅 تاريخ المشروع: 19 يوليو 2026 · آخر تحديث: 27 نوفمبر 2026", "📅 Project date: 19 July 2026 · Last updated: 27 November 2026")}</div>
+              </div>
             </div>
           </div>
         )}

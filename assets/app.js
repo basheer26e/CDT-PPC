@@ -4075,7 +4075,7 @@ ${priorSummaryLines}
     className: "flex items-center gap-3"
   }, /*#__PURE__*/React.createElement("div", null, /*#__PURE__*/React.createElement("div", {
     className: "text-base font-bold text-blue-400"
-  }, U.brandTitle, " \u2014 ", orgLabel.productName), /*#__PURE__*/React.createElement("div", {
+  }, U.brandTitle, orgLabel.productName ? " — " + orgLabel.productName : ""), /*#__PURE__*/React.createElement("div", {
     className: "text-xs text-slate-500"
   }, U.brandSubtitle)), /*#__PURE__*/React.createElement("div", {
     className: "relative"
@@ -6393,7 +6393,7 @@ ${priorSummaryLines}
     className: "text-sm font-bold text-emerald-300 mb-2"
   }, __t("✅ نظام مستقل بالكامل", "✅ A fully independent system")), /*#__PURE__*/React.createElement("div", {
     className: "space-y-1 text-xs text-emerald-200"
-  }, /*#__PURE__*/React.createElement("div", null, __t("• ملف HTML واحد يعمل من أي متصفح — بدون خادم، بدون تثبيت", "• A single HTML file that works from any browser — no server, no installation")), /*#__PURE__*/React.createElement("div", null, __t("• الوكلاء الذكية عبر Gemini API مباشرة (مجاني) — بدون وسيط", "• Smart agents via the Gemini API directly (free) — no intermediary")), /*#__PURE__*/React.createElement("div", null, __t("• البيانات تُحفظ في متصفحك محلياً (localStorage)", "• Data is saved locally in your browser (localStorage)")), /*#__PURE__*/React.createElement("div", null, __t("• استيراد البيانات: Excel أو Google Sheets مباشرة", "• Data import: Excel or Google Sheets directly")))), /*#__PURE__*/React.createElement("div", {
+  }, /*#__PURE__*/React.createElement("div", null, __t("• تطبيق ويب يعمل بالكامل داخل المتصفح — بدون تثبيت وبدون خادم خاص", "• A web app that runs entirely in your browser — no installation, no dedicated server")), /*#__PURE__*/React.createElement("div", null, __t("• الوكلاء الذكية تتصل بـ Gemini API مباشرة من متصفحك في الوضع المحلي (مجاني)", "• Smart agents call the Gemini API directly from your browser in local mode (free)")), /*#__PURE__*/React.createElement("div", null, __t("• البيانات تُحفظ في متصفحك محلياً (localStorage)", "• Data is saved locally in your browser (localStorage)")), /*#__PURE__*/React.createElement("div", null, __t("• استيراد البيانات: Excel أو Google Sheets مباشرة", "• Data import: Excel or Google Sheets directly")))), /*#__PURE__*/React.createElement("div", {
     className: "bg-slate-900 rounded-xl border border-slate-700 p-4"
   }, /*#__PURE__*/React.createElement("h3", {
     className: "text-sm font-bold text-slate-200 mb-3"
@@ -6413,7 +6413,20 @@ ${priorSummaryLines}
     className: "bg-blue-950/30 border border-blue-700 rounded-xl p-4 text-xs text-blue-200"
   }, /*#__PURE__*/React.createElement("div", {
     className: "font-semibold text-blue-300 mb-2"
-  }, __t("🎓 مشروع تخرج — هندسة صناعية", "🎓 Graduation project — Industrial Engineering")), /*#__PURE__*/React.createElement("div", null, __t("Cognitive Digital Twin لتخطيط الإنتاج والتحكم —", "Cognitive Digital Twin for production planning & control —"), " ", orgLabel.productName)))))));
+  }, __t("🎓 مشروع تخرج — هندسة صناعية ونظم تصنيع", "🎓 Graduation project — Industrial & Manufacturing Systems Engineering")), /*#__PURE__*/React.createElement("div", null, __t("Cognitive Digital Twin لتخطيط الإنتاج والتحكم", "Cognitive Digital Twin for production planning & control"), orgLabel.productName ? " — " + orgLabel.productName : ""), /*#__PURE__*/React.createElement("div", {
+    className: "mt-3 pt-3 border-t border-blue-800/60"
+  }, /*#__PURE__*/React.createElement("div", {
+    className: "font-semibold text-blue-300 mb-1.5"
+  }, __t("فريق العمل", "Project team")), /*#__PURE__*/React.createElement("div", {
+    className: "flex flex-wrap gap-x-4 gap-y-1",
+    dir: "ltr"
+  }, ["Basheer Hassan", "Ahmed Al-Musannaf", "Abduljaleel Abdullah", "Safwan Fahd", "Rawaa Al-Kamali"].map(n => /*#__PURE__*/React.createElement("span", {
+    key: n
+  }, n))), /*#__PURE__*/React.createElement("div", {
+    className: "mt-3 text-blue-300/90"
+  }, __t("🏛️ جامعة تعز — 2026", "🏛️ Taiz University — 2026")), /*#__PURE__*/React.createElement("div", {
+    className: "mt-1 text-slate-400"
+  }, __t("📅 تاريخ المشروع: 19 يوليو 2026 · آخر تحديث: 27 نوفمبر 2026", "📅 Project date: 19 July 2026 · Last updated: 27 November 2026")))))))));
 }
 
 // ═══════════════════════════════════════════════════════════════════

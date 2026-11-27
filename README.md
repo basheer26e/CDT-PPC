@@ -23,6 +23,12 @@
 
 البيانات تُحفظ في متصفحك فقط ولا تُرسل إلى أي خادم.
 
+## فريق العمل
+
+Basheer Hassan · Ahmed Al-Musannaf · Abduljaleel Abdullah · Safwan Fahd · Rawaa Al-Kamali
+
+جامعة تعز — 2026 · Taiz University — 2026
+
 ## الحالة
 
 نموذج أولي قيد التطوير: يعمل كاملاً في المتصفح، وربطه بقاعدة بيانات لعدة مصانع قيد العمل.
@@ -33,6 +39,6 @@
 
 ---
 
-**EN:** CDT-PPC is a Cognitive Digital Twin for Production Planning & Control, a graduation project in Industrial & Manufacturing Systems Engineering applied to a ghee factory case study. It turns weekly demand into an MPS/MRP plan, flags material orders that are already too late, runs what-if scenarios, and explains the plan with AI agents. Try it: https://basheer26e.github.io/CDT-PPC/ (choose "continue locally without login"; data stays in your browser). Prototype — feedback from planners and plant engineers is very welcome.
+**EN:** CDT-PPC is a Cognitive Digital Twin for Production Planning & Control, a graduation project in Industrial & Manufacturing Systems Engineering applied to a ghee factory case study. It turns weekly demand into an MPS/MRP plan, flags material orders that are already too late, runs what-if scenarios, and explains the plan with AI agents. Try it: https://basheer26e.github.io/CDT-PPC/ (choose "continue locally without login"; data stays in your browser). Team: Basheer Hassan, Ahmed Al-Musannaf, Abduljaleel Abdullah, Safwan Fahd, Rawaa Al-Kamali. Prototype — feedback from planners and plant engineers is very welcome.
 
 Developer guide: [docs/DEVELOPER.md](docs/DEVELOPER.md)
