@@ -6345,10 +6345,46 @@ ${priorSummaryLines}
   }, /*#__PURE__*/React.createElement("h3", {
     className: "text-sm font-bold text-cyan-300 mb-2"
   }, __t("🧭 ملف تخطيط الشركة الحالي", "🧭 The company's current planning profile")), /*#__PURE__*/React.createElement("div", {
-    className: "space-y-1 text-xs text-cyan-100 mb-3"
-  }, /*#__PURE__*/React.createElement("div", null, __t("• تتبّع مواد خام (BOM):", "• Raw-material tracking (BOM):"), " ", /*#__PURE__*/React.createElement("b", null, planningProfile.hasBOM ? __t("نعم", "Yes") : __t("لا", "No"))), /*#__PURE__*/React.createElement("div", null, __t("• مخزون أمان للمنتج النهائي (FGI):", "• Finished-product safety stock (FGI):"), " ", /*#__PURE__*/React.createElement("b", null, planningProfile.hasFGI ? __t("نعم", "Yes") : __t("لا", "No"))), /*#__PURE__*/React.createElement("div", null, __t("• صيانة دورية بالساعات:", "• Periodic maintenance by hours:"), " ", /*#__PURE__*/React.createElement("b", null, planningProfile.hasMaintenance ? __t("نعم", "Yes") : __t("لا", "No")))), /*#__PURE__*/React.createElement("div", {
+    className: "space-y-2 mb-3"
+  }, [{
+    key: "hasBOM",
+    label: __t("تتبّع مواد خام (BOM)", "Raw-material tracking (BOM)"),
+    onTxt: __t("مفعّل: المخزون وطلبات الشراء وMRP تؤثر على الخطة وتظهر تنبيهات «فات أوان الطلب».", "On: inventory, purchase orders and MRP shape the plan and 'too late to order' alerts appear."),
+    offTxt: __t("متوقف: إنتاج مباشر بلا قيود مواد خام.", "Off: direct production with no raw-material constraints.")
+  }, {
+    key: "hasFGI",
+    label: __t("مخزون أمان للمنتج النهائي (FGI)", "Finished-product safety stock (FGI)"),
+    onTxt: __t("مفعّل: يُنتج قبل وصول الطلب الفعلي مع Push/Pull/Hybrid.", "On: produces ahead of confirmed demand, with Push/Pull/Hybrid."),
+    offTxt: __t("متوقف: إنتاج حسب الطلب المؤكد فقط بلا حاجز مخزون.", "Off: make-to-order only, no finished-goods buffer.")
+  }, {
+    key: "hasMaintenance",
+    label: __t("صيانة دورية بالساعات", "Periodic maintenance by hours"),
+    onTxt: __t("مفعّل: تدخل ساعات الصيانة في الطاقة والخطة.", "On: maintenance hours reduce capacity and enter the plan."),
+    offTxt: __t("متوقف: تُحذف الصيانة من الحسابات.", "Off: maintenance is removed from the calculations.")
+  }].map(q => {
+    const on = !!planningProfile[q.key];
+    return /*#__PURE__*/React.createElement("div", {
+      key: q.key,
+      className: "flex items-start justify-between gap-3 bg-slate-900/40 border border-slate-700 rounded-lg p-2.5"
+    }, /*#__PURE__*/React.createElement("div", {
+      className: "min-w-0"
+    }, /*#__PURE__*/React.createElement("div", {
+      className: "text-xs font-bold text-cyan-100"
+    }, q.label), /*#__PURE__*/React.createElement("div", {
+      className: "text-[11px] text-slate-400 mt-0.5"
+    }, on ? q.onTxt : q.offTxt)), /*#__PURE__*/React.createElement("button", {
+      type: "button",
+      role: "switch",
+      "aria-checked": on,
+      onClick: () => setPlanningProfile({
+        ...planningProfile,
+        [q.key]: !on
+      }),
+      className: "shrink-0 text-xs font-bold px-3 py-1.5 rounded-lg border " + (on ? "bg-emerald-700/60 border-emerald-600 text-emerald-100 hover:bg-emerald-700" : "bg-slate-700/60 border-slate-600 text-slate-300 hover:bg-slate-700")
+    }, on ? __t("✓ نعم", "✓ Yes") : __t("✗ لا", "✗ No")));
+  })), /*#__PURE__*/React.createElement("div", {
     className: "text-xs text-slate-400 mb-2"
-  }, __t("تغيير أي إجابة يُظهر أو يُخفي التبويبات المرتبطة بها فوراً — بياناتكم المُدخَلة مسبقاً (BOM، FGI، الصيانة) تبقى محفوظة كما هي حتى لو أعدتم تفعيلها لاحقاً.", "Changing any answer instantly shows or hides the tabs related to it — your previously entered data (BOM, FGI, maintenance) stays saved as it is even if you re-enable them later.")), /*#__PURE__*/React.createElement("button", {
+  }, __t("اضغط أي زر لتبديل الإجابة فوراً: تتغير الحسابات والتبويبات المرتبطة بها مباشرة، وتبقى بياناتكم المُدخَلة محفوظة كما هي، فتقدرون تقارنون الخطة بين الحالتين.", "Press any button to flip the answer instantly: the related calculations and tabs change right away, and your entered data stays saved, so you can compare the plan between the two cases.")), /*#__PURE__*/React.createElement("button", {
     onClick: () => setPlanningProfile(mkPlanningProfile()),
     className: "text-xs bg-cyan-800/60 hover:bg-cyan-800 border border-cyan-700 text-cyan-200 px-3 py-1.5 rounded-lg font-bold"
   }, __t("🔄 إعادة الإجابة على أسئلة نوع التخطيط", "🔄 Re-answer the planning-type questions"))), /*#__PURE__*/React.createElement("div", {
